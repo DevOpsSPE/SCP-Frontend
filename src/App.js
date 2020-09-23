@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect} from 'react-router-dom'
 import Welcome from './pages/Welcome'
 import pyq from './pages/pyq'
 import readOnePYQ from './pages/readOnePYQ'
@@ -20,6 +19,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Home from "./components/Home";
 class App extends Component {
+  state = { message: "" }
+  callbackFunction = (childData) => {
+        this.setState({message: childData})
+  }
+
   render() {
 
     const marginTop={
@@ -32,6 +36,7 @@ class App extends Component {
         
         <Col lg={12} style={marginTop}>
           <Container>
+            {!localStorage.getItem('token') ? <Redirect from='/*' to='/' /> : ''}
             <Route exact path='/' component={login}/>
             <Route exact path='/register' component={register}/>
             <Route exact path='/pyq' component={pyq}/>

@@ -6,6 +6,7 @@ import { Card, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import { URL } from "../constants";
 
 class videoPage extends Component {
 	constructor(props) {
@@ -35,7 +36,7 @@ class videoPage extends Component {
 	}
 	
 	async componentDidMount() {
-		await axios.get('http://localhost:8000/getVideoData/')
+		await axios.get( URL + 'getVideoData/',{headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
 			.then(Response => {
 				var verified = Response.data.filter(function (tuple) {
 					return tuple.verified == true;
@@ -63,7 +64,9 @@ class videoPage extends Component {
 		console.log(params);
 
 		this.setState({load:true});
-		axios.get('http://localhost:8000/getVideoData/', { params })
+		axios.get( URL + 'getVideoData/', { params,headers: {
+            'Authorization': `JWT ${localStorage.getItem('token')}`
+        }})
 			.then(response => {
 				var verifiedVideos = response.data.filter(function (tuple) {
 					return tuple.verified == true;
@@ -103,7 +106,7 @@ class videoPage extends Component {
 	}
 
 	fileUpload(file) {
-		const url = 'http://localhost:8000/postVideoData/';
+		const url = URL + 'postVideoData/';
 		const formData = new FormData();
 		formData.set('subject', this.state.subject);
 		formData.set('year', this.state.year);
@@ -115,7 +118,8 @@ class videoPage extends Component {
 		console.log(formData);
 		const config = {
 			headers: {
-				'content-type': 'multipart/form-data'
+				'content-type': 'multipart/form-data',
+				'Authorization': `JWT ${localStorage.getItem('token')}`
 			}
 		}
 		return post(url, formData, config)

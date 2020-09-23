@@ -7,22 +7,26 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSave,faTrash,faList} from '@fortawesome/free-solid-svg-icons';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 import {Redirect} from 'react-router-dom';
+import { URL } from "../constants";
 
 class adminVerify extends Component {
 	constructor(props) {
             super(props);
             this.state={
-                data:[],load:true
+                data:[],load:true,role:''
         };
     }
     
     async componentDidMount(){
+
         var id=this.props.match.params.id;
         var url="";
-        (id==1)?(url="http://localhost:8000/getData/"):(id==2)?(url="http://localhost:8000/interviewData/"):(url="http://localhost:8000/getVideoData/");
+        (id==1)?(url=URL+"pyq/admin/"):(id==2)?(url=URL+"interviewData/admin/"):(url=URL+"video/admin/");
         console.log(url);
 
-        await axios.get(url)
+        await axios.get(url,{headers: {
+            'Authorization': `JWT ${localStorage.getItem('token')}`
+        }})
         .then(Response =>{
             var verified =  Response.data.filter(function(tuple) {
                 return tuple.verified ==false;
@@ -30,17 +34,21 @@ class adminVerify extends Component {
               this.setState({data:verified});
               this.setState({load:false});
         })
-        .catch(error => {
-        console.log("error getting");
+        .catch(Response => {
+            console.log(Response.message);
+            ToastsStore.error("You are Unauthorized to view this");
+            return <Redirect to ="/welcome" /> ;
         })
     }
 
     delete = (id) => {
         var parid=this.props.match.params.id;
         var url="";
-        (parid==1)?(url="http://localhost:8000/deleteData/"):(parid==2)?(url="http://localhost:8000/interviewData/"):(url="http://localhost:8000/deleteVideoData/");
+        (parid==1)?(url=URL+"deleteData/"):(parid==2)?(url=URL+"interviewData/"):(url=URL+"deleteVideoData/");
         url += id+"/";
-		axios.delete(url)
+		axios.delete(url,{headers: {
+            'Authorization': `JWT ${localStorage.getItem('token')}`
+        }})
 		.then(response => {
 			if (response.data != null) {
 				this.setState({
@@ -57,12 +65,18 @@ class adminVerify extends Component {
     patch = (id,ver) => {
         var parid=this.props.match.params.id;
         var url="";
-        (parid==1)?(url="http://localhost:8000/getData/"):(parid==2)?(url="http://localhost:8000/interviewData/"):(url="http://localhost:8000/updateVideoData/");
+        (parid==1)?(url=URL+"getData/"):(parid==2)?(url=URL+"interviewData/"):(url=URL+"updateVideoData/");
         url += id+"/";
         const data={
             verified: ver,
           }
-        axios.patch(url,data,{headers:{'Content-Type':'application/json'}})
+          const config = {
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `JWT ${localStorage.getItem('token')}`
+            }
+        }
+        axios.patch(url,data,config)
         .then(Response => {
             this.setState({
                 data: this.state.data.filter(data => data.id !== id)
@@ -124,9 +138,9 @@ class adminVerify extends Component {
       }
 
 	render() {
-        if(localStorage.getItem("role")==="student")
+        if(localStorage.getItem("role")==="Student")
         {
-            alert("You don't have access to this page");            
+            ToastsStore.error("You are Unauthorized to view this");
             return <Redirect to="/welcome"></Redirect>;
         }
 

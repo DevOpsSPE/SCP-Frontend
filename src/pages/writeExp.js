@@ -3,6 +3,7 @@ import axios from 'axios';
 import  {Container,Row,Col, Card,Form,Button} from 'react-bootstrap'
 import NavigationBar from '../components/NavigationBar'
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import { URL } from "../constants";
 
 class writeExp extends Component {
   constructor(props) {
@@ -30,14 +31,19 @@ class writeExp extends Component {
       company:this.state.company
     }
     console.log(details);
+    const config = {
+      headers: {
+          'Authorization': `JWT ${localStorage.getItem('token')}`
+      }
+  }
     
-  axios.post("http://localhost:8000/interviewData/", details).
-  then(response => {
-      //ToastsStore.success("Submitted, admin will verify");
-      alert("Submitted, admin will verify");
+  axios.post( URL + "interviewData/", details,config)
+  .then(response => {
+      ToastsStore.success("Submitted, admin will verify");
+      //alert("Submitted, admin will verify");
       this.props.history.push('/readExperiences');
-  }).
-  catch(error => 
+  })
+  .catch(error => 
     ToastsStore.error("please enter valid inputs"));
   }
 

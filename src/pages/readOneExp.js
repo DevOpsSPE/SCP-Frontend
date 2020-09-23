@@ -2,8 +2,9 @@ import axios from 'axios';
 import React,{Component} from 'react'; 
 import  {Container,Row,Jumbotron,Col,Button,Form,Card} from 'react-bootstrap'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faThumbsUp, faThumbsDown} from '@fortawesome/free-solid-svg-icons';
+import {faThumbsUp} from '@fortawesome/free-solid-svg-icons';
 import NavigationBar from '../components/NavigationBar'
+import { URL } from "../constants";
   
 class readOneExp extends Component { 
 
@@ -20,16 +21,18 @@ class readOneExp extends Component {
 
   async componentDidMount(){
 
-    await axios.get('http://localhost:8000/interviewData/'+this.props.match.params.id+"/").
+    await axios.get( URL + 'interviewData/'+this.props.match.params.id+"/",
+      {headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
+    .
     then(Response =>{
       this.setState({exp:Response.data,votes:Response.data.numberofUpvotes});
       console.log(this.state.exp);
     }).
     catch(error => {
-      alert("Post does not exist");
         this.props.history.push("/readExperiences");
     })
-    await axios.get("http://localhost:8000/exp/comments/"+this.props.match.params.id+"/")
+    await axios.get( URL + "exp/comments/"+this.props.match.params.id+"/",
+    {headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
 		.then(response => {
 			this.setState({comments: response.data});
 		}).catch(error => {
@@ -38,8 +41,14 @@ class readOneExp extends Component {
   }
 
   patch = (id,data) => {
-    let url="http://localhost:8000/interviewData/"+id+"/";
-    axios.patch(url,data,{headers:{'Content-Type':'application/json'}} )
+    let url= URL + "interviewData/"+id+"/";
+    const config = {
+      headers: {
+          'content-type': 'application/json',
+          'Authorization': `JWT ${localStorage.getItem('token')}`
+      }
+  }
+    axios.patch(url,data,config)
     .then(Response => {
       this.setState({votes: this.state.votes+1});
     })
@@ -61,10 +70,16 @@ class readOneExp extends Component {
 				exp: id,
       };
       
-			let url="http://localhost:8000/exp/comments/"+id+"/";
-			axios.post(url, com,{headers:{'Content-Type':'application/json'}})
+      let url= URL + "exp/comments/"+id+"/";
+      const config = {
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('token')}`
+        }
+    }
+			axios.post(url, com,config)
 			.then( response => {
-				axios.get("http://localhost:8000/exp/comments/"+this.props.match.params.id+"/")
+				axios.get( URL + "exp/comments/"+this.props.match.params.id+"/",config)
 				.then(res => {
           this.setState({comments: res.data});
           this.setState({commentTextInput:''});
@@ -205,6 +220,7 @@ class readOneExp extends Component {
 
       return ( 
         <center>
+          
           <NavigationBar/>
             <Container>
               <Row>

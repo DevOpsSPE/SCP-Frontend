@@ -5,6 +5,7 @@ import {Card, Form, Button, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSave, faUndo} from '@fortawesome/free-solid-svg-icons';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import { URL } from "../constants";
 
 export default class Register extends React.Component {
 	
@@ -28,29 +29,17 @@ export default class Register extends React.Component {
 		const user = {
 			rollNumber: this.state.id,
 			username:this.state.name,
-			EmailId: this.state.mail,
+			email: this.state.mail,
 			password: this.state.password
         }
         console.log(user);
-
-        axios.get("http://localhost:8000/loginData/"+user.rollNumber+"/")
-		.then(response => {
-			if(response.data.rollNumber===user.rollNumber)
-			{
-				ToastsStore.warning("User ID already exists")	
-				this.reset();
-				return ;
-			}
-		})
-		.catch(error=>{
 		
-		axios.post("http://localhost:8000/loginData/", user)
+		axios.post(URL+"loginData/create/", user)
 		.then(response => {
 				ToastsStore.success("Successfully Registered");
 				this.reset();
 		})
 		.catch(error => console.log(error));
-        });
 	}
 	
 	reset = () => {

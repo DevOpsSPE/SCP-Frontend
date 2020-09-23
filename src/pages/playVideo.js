@@ -2,7 +2,8 @@ import React from 'react';
 import ReactPlayer from 'react-player';
 import {Jumbotron, Row, Container, Col, Button} from 'react-bootstrap';
 import axios from 'axios';
-import NavigationBar from '../components/NavigationBar'
+import NavigationBar from '../components/NavigationBar';
+import { URL } from "../constants";
 
 export default class playVideo extends React.Component {
 	constructor(props) {
@@ -12,13 +13,22 @@ export default class playVideo extends React.Component {
 	}
 	async componentDidMount() {
 		const videoId = this.props.match.params.id;
-		await axios.get('http://localhost:8000/getVideoData/' + videoId+"/")
+		await axios.get(URL+'getVideoData/' + videoId+"/",{
+            headers: {
+              Authorization: `JWT ${localStorage.getItem('token')}`
+            }
+          })
 			.then(response => {
 				this.setState({ video: response.data });
 			}).catch(error => {
 				console.log("Error in getting video : " + error);
+				this.props.history.push("/videoPage");
 			});
-		await axios.get("http://localhost:8000/commentsOnVideo/" + videoId +"/")
+		await axios.get(URL+"commentsOnVideo/" + videoId +"/",{
+            headers: {
+              Authorization: `JWT ${localStorage.getItem('token')}`
+            }
+          })
 			.then(response => {
 				this.setState({ comments: response.data });
 			}).catch(error => {
@@ -35,9 +45,10 @@ export default class playVideo extends React.Component {
 				videocontent: vidId
 			};
 			
-			axios.post("http://localhost:8000/commentsOnVideo/"+vidId+"/", com)
+			axios.post(URL+"commentsOnVideo/"+vidId+"/", com,{headers: {'Authorization': `JWT ${localStorage.getItem('token')}`}
+			  })
 			.then( response => {
-				axios.get("http://localhost:8000/commentsOnVideo/"+vidId +"/")
+				axios.get(URL+"commentsOnVideo/"+vidId +"/",{headers: {'Authorization': `JWT ${localStorage.getItem('token')}`}})
 				.then(res => {
 					this.setState({comments: res.data});
 				}).catch(err => {

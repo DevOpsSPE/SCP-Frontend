@@ -6,8 +6,10 @@ import {Card, Form, Button} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSave} from '@fortawesome/free-solid-svg-icons';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import { URL } from "../constants";
 
 class pyq extends Component {
+
 	constructor(props) {
             super(props);
             this.state={filter:"",
@@ -36,7 +38,11 @@ class pyq extends Component {
     }
     
     async componentDidMount(){
-        await axios.get('http://localhost:8000/getData/')
+        await axios.get( URL +'getData/',{
+            headers: {
+              Authorization: `JWT ${localStorage.getItem('token')}`
+            }
+          })
         .then(Response =>{
             var verified =  Response.data.filter(function(tuple) {
                 return tuple.verified ==true;
@@ -64,8 +70,10 @@ class pyq extends Component {
         params.resourceType=resourcetype;
         this.setState({load:true});
 
-        axios.get('http://localhost:8000/getData/',
-        {params}
+        axios.get( URL + 'getData/',
+        {params,headers: {
+            'Authorization': `JWT ${localStorage.getItem('token')}`
+        }}
         ).
         then(Response =>{
             var verified =  Response.data.filter(function(tuple) {
@@ -104,7 +112,7 @@ class pyq extends Component {
       }
     
       fileUpload(file){
-        const url = 'http://localhost:8000/postData/';
+        const url = URL + 'postData/';
         const formData = new FormData();
         formData.set('subject',this.state.selectedSub);
         formData.set('year',this.state.year);
@@ -113,11 +121,12 @@ class pyq extends Component {
         formData.set('author',localStorage.getItem("user"))
         
         formData.append('file',file)
-        debugger;
+        
         console.log(formData);
         const config = {
             headers: {
-                'content-type': 'multipart/form-data'
+                'content-type': 'multipart/form-data',
+                'Authorization': `JWT ${localStorage.getItem('token')}`
             }
         }
         return  post(url, formData,config)

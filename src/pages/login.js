@@ -5,6 +5,8 @@ import {Card, Form, Button, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSave, faUndo} from '@fortawesome/free-solid-svg-icons';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import {Redirect} from 'react-router-dom';
+import { URL } from "../constants";
 
 export default class Login extends React.Component {
 	
@@ -16,30 +18,26 @@ export default class Login extends React.Component {
 		this.onChange = this.onChange.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
 	}
-	
+	  
 	onSubmit(event) {
 		event.preventDefault();
 		
 		const user = {
-			id: this.state.id,
+			rollNumber: this.state.id,
 			password:this.state.password,
         }
 		
-		axios.get("http://localhost:8000/loginData/"+user.id+"/")
+		axios.post(URL+"token-auth/", user)
 		.then(response => {
-			if(response.data.rollNumber===user.id && response.data.password===user.password)
-			{
-				localStorage.setItem('user',response.data.username);
-				localStorage.setItem('role',response.data.role);
-				this.props.history.push('/welcome');
-			} 
-			else{
-				ToastsStore.error("Incorrect password");
-				this.reset();
-				this.props.history.push('/');
-		}
-		}).catch(error => {
-			ToastsStore.error("please fill valid details-User Id not found");
+			console.log(response.data);
+			localStorage.setItem('token', response.data.token);
+			localStorage.setItem('user', response.data.user.username);
+			localStorage.setItem('role', response.data.user.role);
+			this.props.history.push('/welcome');
+		})
+		.catch(error => {
+			console.log(error);
+			ToastsStore.error("please fill valid details");
                 this.reset();});
 
 	}

@@ -1,8 +1,10 @@
 import React from 'react'
-import axios, { post } from 'axios';
+import { post } from 'axios';
 import { Card, Form, Button, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faPlusSquare, faUndo, faList, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { URL } from "../constants";
+
 export default class addVideo extends React.Component {
 	initialState = {
 		subject: '',
@@ -44,7 +46,7 @@ export default class addVideo extends React.Component {
 		this.setState({ file: e.target.files[0] })
 	}
 	fileUpload(file) {
-		const url = 'http://localhost:8000/videos/postData/';
+		const url = URL+'videos/postData/';
 		const formData = new FormData();
 		formData.set('subject', this.state.subject);
 		formData.set('semester', this.state.semester);
@@ -54,7 +56,8 @@ export default class addVideo extends React.Component {
 		formData.append('file' ,file);
 		const config = {
 			headers: {
-				'content-type': 'multipart/form-data'
+				'content-type': 'multipart/form-data',
+				'Authorization': `JWT ${localStorage.getItem('token')}`
 			}
 		}
 		return post(url, formData, config)

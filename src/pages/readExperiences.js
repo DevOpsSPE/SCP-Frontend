@@ -2,6 +2,7 @@ import axios from 'axios';
 import React,{Component} from 'react'; 
 import  {Container,Row,Col,Button,Card, CardDeck, Table, Jumbotron} from 'react-bootstrap'
 import NavigationBar from '../components/NavigationBar'
+import { URL } from "../constants";
   
 class readExperiences extends Component { 
 
@@ -14,7 +15,6 @@ class readExperiences extends Component {
     this.props.history.push("/writeExp");
   }
 
-  
   handleChange = event => {
     this.setState({ filter: event.target.value });
   };
@@ -25,7 +25,10 @@ class readExperiences extends Component {
 
   async componentDidMount(){
 
-    await axios.get('http://localhost:8000/interviewData/')
+    await axios.get( URL + 'interviewData/',{
+      headers: {
+        Authorization: `JWT ${localStorage.getItem('token')}`
+      }})
     .then(Response =>{
         var verified =  Response.data.filter(function(tuple) {
           return tuple.verified ==true;

@@ -4,6 +4,7 @@ import  {Container,Row,Jumbotron,Col,Button,Figure,Card} from 'react-bootstrap'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faThumbsUp, faThumbsDown} from '@fortawesome/free-solid-svg-icons';
 import NavigationBar from '../components/NavigationBar'
+import { URL } from "../constants";
   
 class readOnePYQ extends Component { 
 
@@ -20,16 +21,17 @@ class readOnePYQ extends Component {
 
   async componentDidMount(){
 
-    await axios.get('http://localhost:8000/getData/'+this.props.match.params.id+"/")
+    await axios.get( URL + 'getData/'+this.props.match.params.id+"/",
+    {headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
     .then(Response =>{
       this.setState({exp:Response.data,votes:Response.data.numberofUpvotes});
     })
     .catch(error => {
-        alert("Post does not exist");
         this.props.history.push("/pyq");
     })
 
-    await axios.get("http://localhost:8000/pyq/comments/"+this.props.match.params.id+"/")
+    await axios.get( URL + "pyq/comments/"+this.props.match.params.id+"/",
+    {headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
 		.then(response => {
 			this.setState({comments: response.data});
 		}).catch(error => {
@@ -39,8 +41,14 @@ class readOnePYQ extends Component {
 
   patch = (id,data) => {
 	const id1=parseInt(id,10);
-    let url="http://localhost:8000/patchData/"+id1+"/";
-    axios.patch(url,data,{headers:{'Content-Type':'application/json'}} )
+    let url= URL + "patchData/"+id1+"/";
+    const config = {
+      headers: {
+          'content-type': 'application/json',
+          'Authorization': `JWT ${localStorage.getItem('token')}`
+      }
+  }
+    axios.patch(url,data,config)
     .then(Response => {
       this.setState({votes: this.state.votes+1});
     })
@@ -62,10 +70,16 @@ class readOnePYQ extends Component {
 				pyq: id,
       };
       
-			let url="http://localhost:8000/pyq/comments/"+id+"/";
-			axios.post(url, com,{headers:{'Content-Type':'application/json'}})
+      let url= URL + "pyq/comments/"+id+"/";
+      const config = {
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('token')}`
+        }
+    }
+			axios.post(url, com,config)
 			.then( response => {
-				axios.get("http://localhost:8000/pyq/comments/"+this.props.match.params.id+"/")
+				axios.get( URL + "pyq/comments/"+this.props.match.params.id+"/",config)
 				.then(res => {
           this.setState({comments: res.data});
           this.setState({commentTextInput:''});

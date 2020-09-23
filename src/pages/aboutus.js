@@ -1,9 +1,5 @@
 
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import  {Navbar,Nav,Container,Row,Jumbotron,Col} from 'react-bootstrap'
-import NavigationBar from '../components/NavigationBar'
 
 class aboutus extends Component {
   constructor(props) {
