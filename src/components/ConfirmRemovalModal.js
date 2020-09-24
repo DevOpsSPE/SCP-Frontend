@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { Modal, ModalHeader, Button, ModalFooter } from "reactstrap";
-
+import swal from 'sweetalert'
 import axios from "axios";
+import {Redirect} from 'react-router-dom';
 
 import { API_URL } from "../constants";
 
@@ -21,17 +22,33 @@ class ConfirmRemovalModal extends Component {
       this.props.resetState();
       this.toggle();
     });
+    swal ("Success!", "Deleted your entry", "success")
+
   };
+
+  call1 = pk => {
+       if(localStorage.getItem("role")==="student")
+        {
+            swal({
+  title: 'Hold On!',
+  text: 'you are not admin to perform this operation!',
+  icon: 'warning',
+})           
+            return <Redirect to="/mockSchedule"></Redirect>;
+        }
+        this.toggle()
+  }
 
   render() {
     return (
       <Fragment>
-        <Button color="danger" onClick={() => this.toggle()}>
+
+        <Button color="danger" onClick={() => this.call1(this.props.pk)}>
           Remove
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>
-            Do you really wanna delete the student?
+            Do you really want to delete the student?
           </ModalHeader>
 
           <ModalFooter>
