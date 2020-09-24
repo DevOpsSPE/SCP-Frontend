@@ -15,11 +15,14 @@ class NewStudentModal extends Component {
 
   render() {
     const create = this.props.create;
-
-    var title = "Editing Student";
-    var button = <Button onClick={this.toggle}>Edit</Button>;
+    if(localStorage.getItem("role")==="admin")
+    {
+         var title = "Editing Student";
+      var button = <Button onClick={this.toggle}>Edit</Button>;
+    }
    /// var button2 = <Button onClick={this.toggley}>t</Button>;
     if (create) {
+
       title = "Creating New Student";
 
       button = (

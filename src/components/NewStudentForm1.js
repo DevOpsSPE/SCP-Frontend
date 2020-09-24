@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
-
+import swal from 'sweetalert'
 import { API_URL } from "../constants";
 class NewStudentForm1 extends React.Component {
   state = {
@@ -34,10 +34,19 @@ class NewStudentForm1 extends React.Component {
     var str = this.state["name"];
     var email = this.state["email"]
     if (str == "")
-      alert("name is empty re-enter the name")
+      swal ("Fill IT", "name is empty re-enter the name");
     else if (email == "")
-      alert("email cannot be empty!")
+      swal ("FILL IT","email cannot be empty!");
     else{
+      if (email == this.props.student["email"])
+      {
+        swal({
+        title: 'Hold On!',
+        text: 'Both Parties cannot have same mail ID',
+        icon: 'warning',
+      }) 
+      }
+      else {
       axios.post(API_URL+'sendmail/' + this.props.pk, this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
@@ -46,7 +55,9 @@ class NewStudentForm1 extends React.Component {
       axios.delete(API_URL + this.props.pk).then(() => {
       this.props.resetState();
     });
-      alert("Congrats! your meeting scheduled with " + this.props.student["name"])
+      swal("Congrats!", "Your meeting scheduled with " + this.props.student["name"], "success");
+     // alert("Congrats! your meeting scheduled with " + this.props.student["name"])
+      }
     }
   };
 
@@ -85,3 +96,4 @@ class NewStudentForm1 extends React.Component {
 }
 
 export default NewStudentForm1;
+
