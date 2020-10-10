@@ -16,7 +16,7 @@ class pyq extends Component {
             semesters:[
             { sem: 1,  subjects: ['Algorithms', 'ML', 'MML','SS','CNW','Discrete Mathematics']},
             { sem: 2, subjects: ['SPE', 'Data Modelling', 'WAN','MAS']},
-            { sem: 3, subjects: ['DesignPatterns', 'ASR', 'OOAD']},
+            { sem: 3, subjects: ['DesignPatterns', 'ASR', 'OOAD','Software Testing']},
             { sem: 4, subjects: ['thesis']}
             ],
             selectedSem:1,
@@ -262,7 +262,9 @@ class pyq extends Component {
 			</Card.Body>
             
 			<Card.Footer>
-                <input className="btn1" type="file" required onChange={this.onFileChange} /><br/><br/>
+                <input className="btn1" type="file" accept="application/pdf" required onChange={this.onFileChange} />
+                {' *only .pdf allowed'}
+                <br/><br/>
                 
                 <Button size="sm" variant="success" type="submit" onClick={this.onPost}>
 			    <FontAwesomeIcon icon={faSave}/> Post </Button>{'  '}

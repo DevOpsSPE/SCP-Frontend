@@ -18,6 +18,24 @@ import  {Col,Container} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Home from "./components/Home";
+
+class ProtectedRoute extends Component {
+  render() {
+    const { component: Component, ...props } = this.props
+
+    return (
+      <Route 
+        {...props} 
+        render={props => (
+          localStorage.getItem('token') ?
+            <Component {...props} /> :
+            <Redirect to='/' />
+        )}
+      />
+    )
+  }
+}
+
 class App extends Component {
   state = { message: "" }
   callbackFunction = (childData) => {
@@ -30,30 +48,30 @@ class App extends Component {
       marginTop:"60px",
       alignItems:"center"
     }
-
+    //{!localStorage.getItem('token') ? <Redirect from='/*' to='/' /> : ''}
     return (
       <Router basename="/react-auth-ui/">
         
         <Col lg={12} style={marginTop}>
           <Container>
-            {!localStorage.getItem('token') ? <Redirect from='/*' to='/' /> : ''}
+          <Route exact path='/register' component={register}/>
+            
             <Route exact path='/' component={login}/>
-            <Route exact path='/register' component={register}/>
-            <Route exact path='/pyq' component={pyq}/>
-            <Route exact path='/readOnePYQ/:id' component={readOnePYQ}/>
-            <Route exact path='/adminVerify/:id' component={adminVerify}/>
-            <Route exact path='/videoPage' component={videoPage}/>
+            <ProtectedRoute exact path='/pyq' component={pyq}/>
+            <ProtectedRoute exact path='/readOnePYQ/:id' component={readOnePYQ}/>
+            <ProtectedRoute exact path='/adminVerify/:id' component={adminVerify}/>
+            <ProtectedRoute exact path='/videoPage' component={videoPage}/>
           </Container>
           
-          <Route exact path='/welcome' component={Welcome}/>
-          <Route exact path='/mockSchedule' component={Home}/>
-            <Route exact path='/writeExp' component={writeExp} />
-            <Route exact path='/readExperiences' component={readExperiences} />
-            <Route exact path='/readOneExp/:id' component={readOneExp}/>
+          <ProtectedRoute path='/welcome' component={Welcome}/>
+          <ProtectedRoute exact path='/mockSchedule' component={Home}/>
+            <ProtectedRoute exact path='/writeExp' component={writeExp} />
+            <ProtectedRoute exact path='/readExperiences' component={readExperiences} />
+            <ProtectedRoute exact path='/readOneExp/:id' component={readOneExp}/>
                         
-            <Route exact path='/playVideo/:id' component={playVideo}/>
-            <Route exact path='/addVideo' component={addVideo}/>
-            <Route exact path='/aboutus' component={aboutus}/>
+            <ProtectedRoute exact path='/playVideo/:id' component={playVideo}/>
+            <ProtectedRoute exact path='/addVideo' component={addVideo}/>
+            <ProtectedRoute exact path='/aboutus' component={aboutus}/>
         </Col>
         
       </Router>
