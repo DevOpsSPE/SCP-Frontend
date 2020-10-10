@@ -195,7 +195,7 @@ class readOnePYQ extends Component {
                 </Row>
                 </Card.Header>
                     <Card.Body className="text-black text-center">
-                      <Figure.Image width={400} height={400} src={e.file}/>
+                      <embed src={"http://localhost:8000"+e.file} type="application/pdf" width="600" height="600"></embed>
                     </Card.Body>
                 </Card>
               <br/>

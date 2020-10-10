@@ -38,8 +38,9 @@ export default class Register extends React.Component {
 		.then(response => {
 				ToastsStore.success("Successfully Registered");
 				this.reset();
+				this.props.history.push('/');			// redirecting to login page on success
 		})
-		.catch(error => console.log(error));
+		.catch(error =>{ ToastsStore.error("Please enter valid details");});
 	}
 	
 	reset = () => {
@@ -54,69 +55,56 @@ export default class Register extends React.Component {
 		return(
 		<div>
 			<ToastsContainer position={ToastsContainerPosition.TOP_RIGHT} store={ToastsStore}/>
+			<div class="login-page">
 			<Card className={"border border-dark bg-dark text-white"}>
-			<Card.Header> <h3>STUDENT COLLABORATION PORTAL</h3><br/>
+			<Card.Header> <h5>STUDENT COLLABORATION PORTAL</h5><br/>
 				Register </Card.Header>
 			
 			<Form id="FormId" onSubmit={this.onSubmit} onReset={this.reset}>
 			<Card.Body>
-				<Form.Row>
 			  	   <Form.Group as={Col} controlId="formGrid">
-				  		<Form.Label>User Id</Form.Label>
 					    <Form.Control required autoComplete="off"
 					    	type="text" name="id"
 					    	value={this.state.id}
 					    	onChange={this.onChange}
-					    	placeholder="Enter Roll Number" 
+					    	placeholder="Roll Number" 
 					    	className={"bg-dark text-white"}/>
 				  </Form.Group>
 					<Form.Group as={Col} controlId="formGrid">
-					  		<Form.Label>Password</Form.Label>
 						    <Form.Control required autoComplete="off"
 						    	type="password" name="password"
 						    	value={this.state.password}
 						    	onChange={this.onChange}
-						    	placeholder="Enter password" 
+						    	placeholder="Password" 
 						    	className={"bg-dark text-white"}/>
 					  </Form.Group>					    
-				</Form.Row>
-			  	<Form.Row>
 				  	<Form.Group as={Col} controlId="formGrid">
-				  		<Form.Label>User Name</Form.Label>
 					    <Form.Control required autoComplete="off"
 					    	type="text" name="name"
 					    	value={this.state.name}
 					    	onChange={this.onChange}
-					    	placeholder="Enter user name" 
+					    	placeholder="User Name" 
 					    	className={"bg-dark text-white"}/>
 				  </Form.Group>
 				  <Form.Group as={Col} controlId="formGrid">
-				      	<Form.Label>Mail ID</Form.Label>
 				      <Form.Control required autoComplete="off"
 				      	type="email" name="mail"
 				      	value={this.state.mail}
 				    	onChange={this.onChange}
-				      	placeholder="Enter mail id"
+				      	placeholder="Mail id"
 				      	className={"bg-dark text-white"}/>
 				   </Form.Group>
-			  	</Form.Row>
-			</Card.Body>
-			<Card.Footer style={{"textAlign":"right"}}>
-			 <Button size="sm" variant="success" type="submit">
-			    <FontAwesomeIcon icon={faSave}/> Submit
-			  </Button>
+				   <Button size="sm" variant="success" type="submit">Register</Button>
 			    {' '}
 			    <Button size="sm" variant="info" type="reset">
 			    <FontAwesomeIcon icon={faUndo}/> Reset
 			  </Button>
-			    <br/><br/>
-			    <span> Already a user?{' '}
-			    		<Button size="sm" variant="secondary" onClick={this.login}>Login</Button>
-			    </span>
-			</Card.Footer>
+			</Card.Body>
+				<span style={{color:"grey"}}>Already a user?{' '}</span>
+			    		<a href="/" style={{color:"white"}}>Login</a><br/><br/>
 			</Form>
 			</Card>
-			
+			</div>
 		</div>
 		
 		);
