@@ -34,16 +34,9 @@ export default class addVideo extends React.Component {
 	}
 	handleChange(e) {
 		e.preventDefault();
-		if (e.target.name == 'file') {
-			this.setState({ file: e.target.files[0] })
-		}
 		this.setState({
 			[e.target.name]: e.target.value
 		});
-	}
-	handleFileChange = (e) => {
-		e.preventDefault();
-		this.setState({ file: e.target.files[0] })
 	}
 	fileUpload(file) {
 		const url = URL+'videos/postData/';
@@ -138,7 +131,12 @@ export default class addVideo extends React.Component {
 									className={"bg-dark text-white"} />
 							</Form.Group>
 							<Form.Group as={Col} controlId="file">
-								<input class="btn" type="file" required onChange={this.handleFileChange} />
+							<Form.Control autoComplete="off"
+									type="url" name="file"
+									value={file} required
+									onChange={this.handleChange}
+									placeholder="URL of the resource"
+									className={"bg-dark text-white"} />
 							</Form.Group>
 						</Form.Row>
 

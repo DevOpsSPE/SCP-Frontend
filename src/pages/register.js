@@ -28,7 +28,7 @@ export default class Register extends React.Component {
 		const user = {
 			rollNumber: this.state.id,
 			username:this.state.name,
-			EmailId: this.state.mail,
+			email: this.state.mail,
 			password: this.state.password
         }
 		console.log(user);
@@ -36,7 +36,7 @@ export default class Register extends React.Component {
 			ToastsStore.error("Weak Password Dude! Minimum 8 characters,Max 20, Atleast 1 Uppercase, Lowercase,digit, special character 😟");
 		}
 		else if(this.state.emailverified===true){
-		axios.post('http://localhost:8000/loginData/', user)
+		axios.post(URL+"loginData/create/", user)
 		.then(response => {
 				ToastsStore.success("Successfully Registered");
 				this.reset();
@@ -139,14 +139,6 @@ export default class Register extends React.Component {
 					    	placeholder="Roll Number" 
 					    	className={"bg-dark text-white"}/>
 				  </Form.Group>
-					<Form.Group as={Col} controlId="formGrid">
-						    <Form.Control required autoComplete="off"
-						    	type="password" name="password"
-						    	value={this.state.password}
-						    	onChange={this.onChange}
-						    	placeholder="Password" 
-						    	className={"bg-dark text-white"}/>
-					  </Form.Group>					    
 				  	<Form.Group as={Col} controlId="formGrid">
 					    <Form.Control required autoComplete="off"
 					    	type="text" name="name"
@@ -164,13 +156,26 @@ export default class Register extends React.Component {
 				      	className={"bg-dark text-white"}/>
 				   </Form.Group>
 				   <Form.Group as={Col} controlId="formGrid">
-				  		<Form.Label>Enter OTP</Form.Label>
+						    <Form.Control required autoComplete="off"
+						    	type="password" name="password"
+						    	value={this.state.password}
+						    	onChange={this.onChange}
+						    	placeholder="Password" 
+						    	className={"bg-dark text-white"}/>
+					  </Form.Group>					    
+				   <Form.Group as={Col} controlId="formGrid">
+					   <div class="row">
+				   		<div class="col"><Button size="sm" variant="primary" onClick={this.confirmEmail}>Send OTP<i class="fas fa-envelope"></i></Button></div>
+						<div class="col">
 					    <Form.Control required autoComplete="off"
 					    	type="password" name="otp"
 					    	value={this.state.otp}
 					    	onChange={this.onChange}
-					    	placeholder="Enter OTP Received on your Email" 
+					    	placeholder="OTP : mail" 
 					    	className={"bg-dark text-white"}/>
+							</div>
+						<div class="col"><Button  size="sm" variant="primary" onClick={this.verifyEmail}>Verify OTP</Button></div>
+							</div>
 				  </Form.Group>
 				   <Button size="sm" variant="success" type="submit">Register</Button>
 			    {' '}
@@ -178,22 +183,9 @@ export default class Register extends React.Component {
 			    <FontAwesomeIcon icon={faUndo}/> Reset
 			  </Button>
 			</Card.Body>
-			<Button size="sm" variant="primary" onClick={this.confirmEmail}>Send OTP<i class="fas fa-envelope"></i></Button>
-			&nbsp;
-			<Button  size="sm" variant="primary" onClick={this.verifyEmail}>Validate OTP</Button>
-			<Card.Footer style={{"textAlign":"right"}}>
-			 <Button size="sm" variant="success" type="submit">
-			    <FontAwesomeIcon icon={faSave}/> Submit
-			  </Button>
-			    {' '}
-			    <Button size="sm" variant="info" type="reset">
-			    <FontAwesomeIcon icon={faUndo}/> Reset
-			  </Button>
-			    <br/><br/>
-				<span style={{color:"grey"}}>Already a user?{' '}</span>
+			
+			<span style={{color:"grey"}}>Already a user?{' '}</span>
 			    		<a href="/" style={{color:"white"}}>Login</a><br/><br/>
-						</Card.Footer>
-
 			</Form>
 			</Card>
 			</div>

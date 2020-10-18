@@ -23,14 +23,14 @@ class videoPage extends Component {
 			speaker: '',
 			year: '',
 			videos: [],
-			file: null,
+			file: '',
 			load:true,
 		};
 
 		this.onChange = this.onChange.bind(this);
 		this.onGet = this.onGet.bind(this);
 		this.fileUpload = this.fileUpload.bind(this);
-		this.handleFileChange = this.handleFileChange.bind(this);
+		//this.handleFileChange = this.handleFileChange.bind(this);
 		this.videosList = this.videosList.bind(this);
 		this.onPost = this.onPost.bind(this);
 	}
@@ -84,14 +84,15 @@ class videoPage extends Component {
 		});
 	}
 
-	handleFileChange = (e) => {
+	/*handleFileChange = (e) => {
 		e.preventDefault();
 		this.setState({ file: e.target.files[0] })
-	}
+	}*/
 
 	onPost(e) {
 		e.preventDefault();
-		if (this.state.file == null || this.state.year == '' || this.state.subject == '')
+		console.log(this.state.file)
+		if (this.state.file == '' || this.state.year == '' || this.state.subject == '')
 			return alert("Please fill all the details");
 
 		this.fileUpload(this.state.file)
@@ -101,8 +102,6 @@ class videoPage extends Component {
 		}).catch(error => {
 			ToastsStore.warning("Error in posting");
 		})
-
-		//this.props.history.push('/verify');
 	}
 
 	fileUpload(file) {
@@ -118,7 +117,6 @@ class videoPage extends Component {
 		console.log(formData);
 		const config = {
 			headers: {
-				'content-type': 'multipart/form-data',
 				'Authorization': `JWT ${localStorage.getItem('token')}`
 			}
 		}
@@ -263,12 +261,13 @@ class videoPage extends Component {
 											onChange={this.onChange}
 											className={"bg-dark text-white"}>
 										</Form.Control>
-									</Form.Group>
+									</Form.Group><br/>
+									
 
 									<Form.Group as={Col} controlId="formGrid">
 										<Form.Label>Submit</Form.Label><br />
 										<Button size="sm" variant="success" onClick={this.onGet}>
-											<FontAwesomeIcon icon={faSave} /> Get </Button>{'  '}<br />
+											 Get </Button>{'  '}<br />
 									</Form.Group>
 								</Form.Row>
 
@@ -276,11 +275,20 @@ class videoPage extends Component {
 						</Card.Body>
 
 						<Card.Footer>
-							<input className="btn1" type="file" required onChange={this.handleFileChange} /><br /><br />
-
+						<div class="row">
+							<Form.Group as={Col} controlId="file">
+										<Form.Control autoComplete="off"
+												type="url" name="file"
+												value={this.state.file} required
+												onChange={this.onChange}
+												placeholder="URL of the resource"
+												className={"bg-dark text-white"} />
+										</Form.Group>
+										
+									
 							<Button size="sm" variant="success" type="submit" onClick={this.onPost}>
 								<FontAwesomeIcon icon={faSave} /> Post </Button>{'  '}
-
+								</div>
 						</Card.Footer>
 					</Form>
 				</Card>
